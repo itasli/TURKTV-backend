@@ -15,8 +15,8 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/turkuvaz/{item_id}", response_class=RedirectResponse, status_code=301)
-def turkuvaz(item_id: str):
+@app.get("/turkuvaz/{item_id}")
+async def turkuvaz(item_id: str):
 
     # item_id = ["atvhd", "a2tv", "ahaberhd", "aparahd", "asporhd", "atvavrupa", "minikagococuk", "minikago"]
 
@@ -27,7 +27,24 @@ def turkuvaz(item_id: str):
     resp = requests.get(URL_LICENCE_KEY % (item_id, item_id), headers=headers)
     video_url = re.compile('\"Url\":\"(.*?)\"').findall(resp.text)[0]
 
-    return video_url
+    #return video_url
+
+    # Specify the desired headers
+    response_headers = {
+        "Content-Type": "application/vnd.apple.mpegurl",
+        "Transfer-Encoding": "chunked",
+        "ETag": "65d4da87-18b",
+        "Access-Control-Allow-Origin": "*",
+        "X0": "EXPIRED",
+        "Server": "esrv",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "X1": "EXPIRED",
+    }
+
+    hls_stream = requests.get(video_url, stream=True)
+
+    # Use StreamingResponse to stream the content as the response with the specified headers
+    return StreamingResponse(content=hls_stream, headers=response_headers)
 
 
 @app.get("/dogus/{item_id}", response_class=RedirectResponse)
