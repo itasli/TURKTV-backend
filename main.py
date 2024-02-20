@@ -3,7 +3,7 @@ import re
 import json
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 
 from fake_useragent import UserAgent
 
@@ -15,7 +15,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/turkuvaz/{item_id}", response_class=RedirectResponse)
+@app.get("/turkuvaz/{item_id}", response_class=FileResponse)
 def turkuvaz(item_id: str):
 
     # item_id = ["atvhd", "a2tv", "ahaberhd", "aparahd", "asporhd", "atvavrupa", "minikagococuk", "minikago"]
